@@ -1,0 +1,162 @@
+<div style="position: absolute;
+    z-index: 1000;
+    width: 100%;
+    height: 100%;
+    background: #f3f3f382;
+    text-align: center;" id="loader">
+  <div>
+    <img style="
+    width: 18%;
+    height: 50%;
+    margin-top: 13%;" src="./assets/images/logo_loader.gif"/>
+  </div>
+</div>
+
+<ng2-toasty [position]="position"></ng2-toasty>
+<div id="seccionPrincipal">
+  <app-card [title]="'Crear usuarios'">
+    <div class="row">
+      <div class="col-md-12">
+        <button class="btn btnPropio" style="float: right;" (click)="reset()">
+          <i class="ti-wand"></i>Reset
+        </button>
+      </div>
+    </div>
+    <div class="row" id="datosBasicosCrearMenu">
+      <div class="col-sm-3 col-md-3">
+        <h4 class="sub-title">Documento</h4>
+        <input class="form-control" id="documento" name="descripcion" placeholder="Documento"
+               #descripcionExamen="ngModel"
+               [ngStyle]="{'border': objProfile.se_profile_identification== '' ? 'red solid 1px' : '#577928 solid 1px'}"
+               [(ngModel)]="objProfile.se_profile_identification">
+      </div>
+      <div class="col-sm-3 col-md-3">
+        <h4 class="sub-title">Nombre</h4>
+        <input class="form-control" id="nombre" name="descripcion" placeholder="Nombre"
+               #descripcionExamen="ngModel"
+               [ngStyle]="{'border': objProfile.se_profile_name== '' ? 'red solid 1px' : '#577928 solid 1px'}"
+               [(ngModel)]="objProfile.se_profile_name">
+      </div>
+      <div class="col-sm-3 col-md-3">
+        <h4 class="sub-title">Apellido</h4>
+        <input class="form-control" id="apellido" name="descripcion" placeholder="Apellido"
+               #descripcionExamen="ngModel"
+               [ngStyle]="{'border': objProfile.se_profile_surname== '' ? 'red solid 1px' : '#577928 solid 1px'}"
+               [(ngModel)]="objProfile.se_profile_surname">
+      </div>
+      <div class="col-sm-3 col-md-3">
+        <h4 class="sub-title">Telefono</h4>
+        <input class="form-control" id="telefono" name="descripcion" placeholder="Telefonos"
+               #descripcionExamen="ngModel"
+               [ngStyle]="{'border': objProfile.se_profile_phone== '' ? 'red solid 1px' : '#577928 solid 1px'}"
+               [(ngModel)]="objProfile.se_profile_phone">
+      </div>
+    </div>
+    <div class="row" style="margin-top: 10px">
+      <div class="col-sm-3 col-md-3">
+        <h4 class="sub-title">Correo</h4>
+        <input class="form-control" id="correo" name="descripcion" placeholder="Correo"
+               #descripcionExamen="ngModel"
+               [ngStyle]="{'border': objUser.se_user_email== '' ? 'red solid 1px' : '#577928 solid 1px'}"
+               [(ngModel)]="objUser.se_user_email">
+      </div>
+      <div class="col-sm-3 col-md-3">
+        <h4 class="sub-title">Rol</h4>
+        <select class="form-control"  style="width: 100%"
+                [ngStyle]="{'border': objUser.se_role_id_fk_users == '' ? 'red solid 1px' : '#577928 solid 1px'}"
+                [(ngModel)]="objUser.se_role_id_fk_users">
+          <option value="">Seleccione</option>
+          <option *ngFor="let rol of listRol" value="{{rol.se_rol_id}}">{{rol.se_rol_description}}</option>
+        </select>
+      </div>
+      <div class="col-sm-3 col-md-3">
+        <h4 class="sub-title">Estado</h4>
+        <select class="form-control"
+                [ngStyle]="{'border': objProfile.se_profile_state == '000' ? 'red solid 1px' : '#577928 solid 1px'}"
+                [(ngModel)]="objProfile.se_profile_state">
+          <option value="000">Seleccione</option>
+          <option value="ACTIVO">Activo</option>
+          <option value="INACTIVO">Inactivo</option>
+        </select>
+      </div>
+    </div>
+    <div class="col-md-12" style="margin-top: 10px;" >
+      <div class="row" style="float: right; " id="botonesDatosBasicosCrearMenu">
+        <button style="padding: 5px; margin: 5px" class="btn btn-sm btnPropio" id="btnCrearMenu"
+                (click)="newUser()">
+          Crear usuario
+        </button>
+
+        <button style="padding: 5px; margin: 5px" class="btn btn-sm btnPropio" id="btnActualizarMenu" (click)="actualizarUsuario()">Actualizar usuario
+        </button>
+      </div>
+    </div>
+  </app-card>
+  <div class="row">
+    <div class="col-sm-12">
+      <app-card [title]="'Tabla de usuarios'">
+        <div class="dataTables_scrollBody"
+             style="position: relative; overflow: auto; max-height: 400px; width: 100%; margin-top: 10px">
+
+          <table class="table table-striped table-bordered nowrap dataTable" role="grid"
+                 aria-describedby="scr-vrt-dt_info" style="width: 100%;">
+            <thead>
+            <tr role="row" style="height: 0px;">
+              <th style="width: 144.45px;">
+                Documento
+              </th>
+              <th style="width: 144.45px;">
+                Nombres
+              </th>
+              <th style="width: 144.45px;">
+                Apellido
+              </th>
+              <th style="width: 70px;">
+                Telefono
+              </th>
+              <th style="width: 70px;">
+                Correo
+              </th>
+              <th style="width: 70px;">
+                Rol
+              </th>
+              <th style="width: 30px;">
+                Estado
+              </th>
+              <th style="width: 70px;">
+                Ultimo ingreso
+              </th>
+              <th style="width: 70px;">
+                Acciones
+              </th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr *ngFor="let usuario of listUser; let i = index" role="row" class="odd Tablas filaTabla">
+              <td>{{usuario.se_profile_identification}}</td>
+              <td>{{usuario.se_profile_name}}</td>
+              <td>{{usuario.se_profile_surname}}</td>
+              <td>{{usuario.se_profile_phone}}</td>
+              <td>{{usuario.se_user_email}}</td>
+              <td><span class="pcoded-badge label label-success">{{usuario.se_role_id_fk_users}}</span></td>
+              <td>{{usuario.se_profile_state}}</td>
+              <td>{{usuario.se_user_last_connection}}</td>
+              <td style="text-align: center">
+                <label  onclick="desplegar(this)" id="{{i}}" class="botonDesplegar">
+                  <i class="ti-settings"></i>
+                  <div class="panelTabla" id="T{{i}}" style="display: none">
+                    <ul>
+                      <a><li (click)="selectUser(usuario)"><label>Seleccionar</label></li></a>
+                    </ul>
+                  </div>
+                </label>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </app-card>
+    </div>
+  </div>
+</div>

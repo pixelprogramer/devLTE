@@ -1,0 +1,102 @@
+<div style="position: absolute;
+    z-index: 1000;
+    width: 100%;
+    height: 100%;
+    background: #f3f3f382;
+    text-align: center;" id="loader">
+  <div>
+    <img style="
+    width: 18%;
+    height: 50%;
+    margin-top: 13%;" src="./assets/images/logo_loader.gif"/>
+  </div>
+</div>
+
+<ng2-toasty [position]="position"></ng2-toasty>
+<app-card [title]="'Crear rol'">
+  <div class="row">
+    <div class="col-md-12">
+      <button class="btn btnPropio" style="float: right;" (click)="reset()">
+        <i class="ti-wand"></i>Reset
+      </button>
+    </div>
+  </div>
+  <div class="row" id="datosBasicosCrearPermisos">
+    <div class="col-sm-12 col-md-6">
+      <h4 class="sub-title">Descripcion</h4>
+      <input class="form-control" id="descripcion" name="descripcion" placeholder="Descripcion"
+             #descripcionExamen="ngModel"
+             [ngStyle]="{'border': objRol.se_rol_description== '' ? 'red solid 1px' : '#577928 solid 1px'}"
+             [(ngModel)]="objRol.se_rol_description">
+    </div>
+    <div class="col-sm-12 col-md-6 col-xs-12">
+      <h4 class="sub-title">Estado</h4>
+      <select class="form-control"
+              [ngStyle]="{'border': objRol.se_rol_state == '000' ? 'red solid 1px' : '#577928 solid 1px'}"
+              [(ngModel)]="objRol.se_rol_state">
+        <option value="000">Seleccione</option>
+        <option value="ACTIVO">Activo</option>
+        <option value="INACTIVO">Inactivo</option>
+      </select>
+    </div>
+  </div>
+  <div class="col-md-12" style="margin-top: 10px;">
+    <div class="row" style="float: right; ">
+      <button class="btn btn-sm btnPropio" (click)="newRol()" id="btnCrearRol"
+              [disabled]="objRol.se_rol_description == '' || objRol.se_rol_description == '000'">
+        Crear
+      </button>
+
+      <button  class="btn btn-sm btnPropio" id="btnActualizarRol"
+              [disabled]="objRol.se_rol_description == '' || objRol.se_rol_state == '000' || objRol.se_rol_id==''"
+              (click)="updatedRol()">Actualizar
+      </button>
+    </div>
+  </div>
+</app-card>
+<div class="row">
+  <div class="col-sm-12">
+    <app-card [title]="'Tabla de roles'">
+      <div class="dataTables_scrollBody"
+           style="position: relative; overflow: auto; max-height: 400px; width: 100%; margin-top: 10px">
+        <table class="table table-striped table-bordered nowrap dataTable" role="grid"
+               aria-describedby="scr-vrt-dt_info" style="width: 100%;">
+          <thead>
+          <tr role="row" style="height: 0px;">
+            <th style="width: 144.45px;">
+              Codigo
+            </th>
+            <th style="width: 144.45px;">
+              Descripcion
+            </th>
+            <th style="width: 144.45px;">
+              Estado
+            </th>
+            <th style="width: 70px;">
+              Acciones
+            </th>
+          </tr>
+          </thead>
+
+          <tbody>
+          <tr *ngFor="let rol of listRol; let i = index" role="row" class="odd Tablas filaTabla">
+            <td>{{rol.se_rol_id}}</td>
+            <td>{{rol.se_rol_description}}</td>
+            <td><span [class]="rol.se_rol_state == 'activo' || rol.se_rol_state == 'ACTIVO' ? 'pcoded-badge label label-success':'pcoded-badge label label-danger'" >{{rol.se_rol_state}}</span></td>
+            <td style="text-align: center">
+              <label  onclick="desplegar(this)" id="{{i}}" class="botonDesplegar">
+                <i class="ti-settings"></i>
+                <div class="panelTabla" id="T{{i}}" style="display: none">
+                  <ul>
+                    <a><li (click)="seleccionarRol(rol)"><label>Seleccionar</label></li></a>
+                  </ul>
+                </div>
+              </label>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </app-card>
+  </div>
+</div>
