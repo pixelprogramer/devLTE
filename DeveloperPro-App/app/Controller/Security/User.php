@@ -250,6 +250,38 @@ $app->group('/api-security/', function () {
 
             echo $helper->checkCode($data);
         });
+        $this->post('listUserClerk', function (Request $request) {
+            $parametros = $request->getParsedBody();
+            $token = (isset($parametros['token'])) ? $parametros['token'] : null;
+            if ($token != null) {
+                $jwt = new \Service\JwtAuth();
+                $helper = new \Service\Helpers();
+                $validacionToken = $jwt->checkToken($token);
+                if ($validacionToken == true) {
+                    $connection = new \Service\Connections();
+                    $sql = "select se_user.se_user_id, se_profile.se_profile_name ,se_profile.se_profile_surname,se_profile.se_profile_identification 
+                            from security.se_users se_user inner join security.se_profiles se_profile on 
+                            se_user.se_user_id=se_profile.se_user_id_fk_profiles 
+                            where se_user.se_user_active = '1' and se_user.se_user_clerk = '1'";
+                    $r = $connection->complexQueryAssociative($sql);
+                    $data = [
+                        'code' => '1001',
+                        'msg' => 'Usuarios cargados cargados',
+                        'data' => $r
+                    ];
+                } else {
+                    $data = [
+                        'code' => '1008'
+                    ];
+                }
+            } else {
+                $data = [
+                    'code' => '1008'
+                ];
+            }
+
+            echo $helper->checkCode($data);
+        });
         $this->post('newUser', function (Request $request) {
             $parametros = $request->getParsedBody();
             $jsonUser = (isset($parametros['jsonUser'])) ? $parametros['jsonUser'] : null;
@@ -263,17 +295,24 @@ $app->group('/api-security/', function () {
                     if ($validacionToken == true) {
                         $fecha_ingreso = date('Y-m-d H:i');
                         $connection = new \Service\Connections();
+                        $emailTemplate = new EmailTemplate();
                         $parametrosJsonUser = json_decode($jsonUser);
                         $parametrosJsonProfile = json_decode($jsonProfile);
                         $se_user_email = strtolower((isset($parametrosJsonUser->se_user_email)) ? $parametrosJsonUser->se_user_email : null);
                         $se_user_password = (isset($parametrosJsonUser->se_user_password)) ? $parametrosJsonUser->se_user_password : null;
                         $se_user_state = strtolower((isset($parametrosJsonUser->se_user_state)) ? $parametrosJsonUser->se_user_state : null);
+                        $se_role_id_fk_users = (isset($parametrosJsonUser->se_role_id_fk_users)) ? $parametrosJsonUser->se_role_id_fk_users : null;
+                        $se_group_id_fk_users = (isset($parametrosJsonUser->se_group_id_fk_users)) ? $parametrosJsonUser->se_group_id_fk_users : null;
 
                         $se_profile_identification = (isset($parametrosJsonProfile->se_profile_identification)) ? $parametrosJsonProfile->se_profile_identification : null;
                         $se_profile_name = strtolower((isset($parametrosJsonProfile->se_profile_name)) ? $parametrosJsonProfile->se_profile_name : null);
                         $se_profile_surname = strtolower((isset($parametrosJsonProfile->se_profile_surname)) ? $parametrosJsonProfile->se_profile_surname : null);
                         $se_profile_phone = (isset($parametrosJsonProfile->se_profile_phone)) ? $parametrosJsonProfile->se_profile_phone : null;
                         $se_profile_state = (isset($parametrosJsonProfile->se_profile_state)) ? $parametrosJsonProfile->se_profile_state : null;
+                        $se_profile_birthdate = (isset($parametrosJsonProfile->se_profile_birthdate)) ? $parametrosJsonProfile->se_profile_birthdate : null;
+                        $se_profile_address = strtolower((isset($parametrosJsonProfile->se_profile_address)) ? $parametrosJsonProfile->se_profile_address : null);
+                        $se_profile_phone_cell = strtolower((isset($parametrosJsonProfile->se_profile_phone_cell)) ? $parametrosJsonProfile->se_profile_phone_cell : null);
+                        $co_city_id_fk_profiles = strtolower((isset($parametrosJsonProfile->co_city_id_fk_profiles)) ? $parametrosJsonProfile->co_city_id_fk_profiles : null);
                         if ($helper->isValidEmail($se_user_email)) {
                             $se_user_email = strtolower($se_user_email);
                             $sql = "select * from security.se_users se_use where se_use.se_user_email like '$se_user_email'";
@@ -285,14 +324,24 @@ $app->group('/api-security/', function () {
                                     $activatedCode = time() . rand(0, 1000);
                                     $password = time();
                                     $passwordHas = hash('SHA256', $password);
-
+                                    $helper->sendEmail('no-reply', getenv('EMAIL_EMAIL'), getenv('EMAIL_PASS'),
+                                        getenv('EMAIL_SMTP'), getenv('EMAIL_PORT'), getenv('EMAIL_AUTH'),
+                                        $se_profile_name . ' ' . $se_profile_surname, $email, 'prueba email',
+                                        $emailTemplate->codeActivation($se_profile_name . ' ' . $se_profile_surname, $activatedCode), null, null);
                                     //Envio de correo de activacion
                                     $sql = "INSERT INTO security.se_users(
                                         se_user_email, se_user_password, se_user_code, 
                                         se_user_created_at, se_user_state, se_role_id_fk_users, se_group_id_fk_users, se_user_active)
-                                        VALUES ('$se_user_email', '$passwordHas', '$activatedCode',  '$fecha_ingreso', 'INACTIVO',  ?, ?, ?);";
-
-
+                                        VALUES ('$se_user_email', '$passwordHas', '$activatedCode',  '$fecha_ingreso', 'INACTIVO',  '$se_role_id_fk_users', '$se_group_id_fk_users', '1') returning se_user_id;";
+                                    $r = $connection->complexQueryNonAssociative($sql);
+                                    $se_user_id = $r['se_user_id'];
+                                    $sql = "INSERT INTO security.se_profiles(
+                                         se_profile_identification, se_profile_name, se_profile_surname, se_profile_image, 
+                                        se_profile_birthdate, se_profile_address, se_profile_phone, se_profile_phone_cell, se_profile_state, 
+                                        co_city_id_fk_profiles, se_user_id_fk_profiles, se_profile_active, se_profile_created_at)
+                                        VALUES ('$se_profile_identification', '$se_profile_name', '$se_profile_surname', '', '$se_profile_birthdate', 
+                                        '$se_profile_address', '$se_profile_phone', '$se_profile_phone_cell', 'ACTIVO', '$co_city_id_fk_profiles', '$se_user_id', '1', '$fecha_ingreso');";
+                                    $connection->simpleQuery($sql);
                                 } else {
                                     $data = [
                                         'code' => '1007',
