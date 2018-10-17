@@ -17,6 +17,11 @@ export class UserService{
     let header = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
     return this._Http.post(this.url+'api-security/users/listUser',parametros,{headers:header})
   }
+  listUserClerk(token): Observable <any>{
+    let parametros = 'token='+token;
+    let header = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
+    return this._Http.post(this.url+'api-security/users/listUserClerk',parametros,{headers:header})
+  }
   listMenusComplet(token,objRol): Observable <any>{
     let json = JSON.stringify(objRol);
     let parametros = 'token='+token+'&json='+json;

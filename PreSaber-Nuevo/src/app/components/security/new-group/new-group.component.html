@@ -1,0 +1,194 @@
+<div style="position: absolute;
+    z-index: 1000;
+    width: 100%;
+    height: 100%;
+    background: #f3f3f382;
+    text-align: center;" id="loader">
+  <div>
+    <img style="
+    width: 18%;
+    height: 50%;
+    margin-top: 13%;" src="./assets/images/logo_loader.gif"/>
+  </div>
+</div>
+
+<ng2-toasty [position]="position"></ng2-toasty>
+<div id="seccionPrincipal">
+  <app-card [title]="'Crear grupos'">
+    <div class="row">
+      <div class="col-md-12">
+        <button class="btn btnPropio" style="float: right;" (click)="reset()">
+          <i class="ti-wand"></i>Reset
+        </button>
+      </div>
+    </div>
+    <div class="row" id="datosBasicosCrearMenu">
+      <div class="col-sm-3 col-md-3">
+        <h4 class="sub-title">Descripcion</h4>
+        <input class="form-control" id="descripcion" name="descripcion" placeholder="Descripcion"
+               #descripcionExamen="ngModel"
+               [ngStyle]="{'border': objGroup.se_group_description== '' ? 'red solid 1px' : '#577928 solid 1px'}"
+               [(ngModel)]="objGroup.se_group_description">
+      </div>
+      <div class="col-sm-3 col-md-3">
+        <h4 class="sub-title">Coordinador</h4>
+        <input class="form-control" id="coordinador" name="coordinador" placeholder="Coordinador"
+               #descripcionExamen="ngModel" (click)="[modalCoordinate.show(),inicialiteUser(1)]"
+               [ngStyle]="{'border': objGroup.se_coordinator_id_fk_groups== '000' ? 'red solid 1px' : '#577928 solid 1px'}"
+               [(ngModel)]="nameCoordinate">
+      </div>
+      <div class="col-sm-3 col-md-3">
+        <h4 class="sub-title">Sub-coordinador</h4>
+        <input class="form-control" id="subCoordinador" name="subCoordinador" placeholder="Sub-coordinador"
+               #descripcionExamen="ngModel" (click)="[modalCoordinate.show(),inicialiteUser(2)]"
+               [ngStyle]="{'border': objGroup.se_alternate_id_fk_groups== '000' ? 'red solid 1px' : '#577928 solid 1px'}"
+                [(ngModel)]="nameAlternate">
+      </div>
+      <div class="col-sm-3 col-md-3">
+        <h4 class="sub-title">Estado</h4>
+        <select class="form-control"
+                [ngStyle]="{'border': objGroup.se_group_state == '000' ? 'red solid 1px' : '#577928 solid 1px'}"
+                [(ngModel)]="objGroup.se_group_state">
+          <option value="000">Seleccione</option>
+          <option value="ACTIVO">Activo</option>
+          <option value="INACTIVO">Inactivo</option>
+        </select>
+      </div>
+    </div>
+    <div class="col-md-12" style="margin-top: 10px;" >
+      <div class="row" style="float: right; " id="botonesDatosBasicosCrearMenu">
+        <button style="padding: 5px; margin: 5px" class="btn btn-sm btnPropio" id="btnCrearMenu"
+                (click)="newGroup()">
+          Crear
+        </button>
+
+        <button style="padding: 5px; margin: 5px" class="btn btn-sm btnPropio" id="btnActualizarMenu" (click)="actualizarUsuario()">Actualizar
+        </button>
+      </div>
+    </div>
+  </app-card>
+  <!--
+  <div class="row">
+    <div class="col-sm-12">
+      <app-card [title]="'Tabla de usuarios'">
+        <div class="dataTables_scrollBody"
+             style="position: relative; overflow: auto; max-height: 400px; width: 100%; margin-top: 10px">
+
+          <table class="table table-striped table-bordered nowrap dataTable" role="grid"
+                 aria-describedby="scr-vrt-dt_info" style="width: 100%;">
+            <thead>
+            <tr role="row" style="height: 0px;">
+              <th style="width: 144.45px;">
+                Documento
+              </th>
+              <th style="width: 144.45px;">
+                Nombres
+              </th>
+              <th style="width: 144.45px;">
+                Apellido
+              </th>
+              <th style="width: 70px;">
+                Telefono
+              </th>
+              <th style="width: 70px;">
+                Correo
+              </th>
+              <th style="width: 70px;">
+                Rol
+              </th>
+              <th style="width: 30px;">
+                Estado
+              </th>
+              <th style="width: 70px;">
+                Ultimo ingreso
+              </th>
+              <th style="width: 70px;">
+                Acciones
+              </th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr *ngFor="let usuario of listUser; let i = index" role="row" class="odd Tablas filaTabla">
+              <td>{{usuario.se_profile_identification}}</td>
+              <td>{{usuario.se_profile_name}}</td>
+              <td>{{usuario.se_profile_surname}}</td>
+              <td>{{usuario.se_profile_phone}}</td>
+              <td>{{usuario.se_user_email}}</td>
+              <td><span class="pcoded-badge label label-success">{{usuario.se_role_id_fk_users}}</span></td>
+              <td>{{usuario.se_profile_state}}</td>
+              <td>{{usuario.se_user_last_connection}}</td>
+              <td style="text-align: center">
+                <label  onclick="desplegar(this)" id="{{i}}" class="botonDesplegar">
+                  <i class="ti-settings"></i>
+                  <div class="panelTabla" id="T{{i}}" style="display: none">
+                    <ul>
+                      <a><li (click)="selectUser(usuario)"><label>Seleccionar</label></li></a>
+                    </ul>
+                  </div>
+                </label>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </app-card>
+    </div>
+  </div>
+  -->
+</div>
+<app-modal-basic #modalCoordinate>
+  <div class="app-modal-header">
+    <h4 class="modal-title">{{titleCoordinate}}</h4>
+  </div>
+  <div class="app-modal-body">
+    <div class="row">
+      <div class="col-sm-12">
+        <app-card [title]="'Tabla de usuarios'">
+          <div class="dataTables_scrollBody"
+               style="position: relative; overflow: auto; max-height: 400px; width: 100%; margin-top: 10px">
+
+            <table class="table table-striped table-bordered nowrap dataTable" role="grid"
+                   aria-describedby="scr-vrt-dt_info" style="width: 100%;">
+              <thead>
+              <tr role="row" style="height: 0px;">
+                <th style="width: 144.45px;">
+                  Documento
+                </th>
+                <th style="width: 144.45px;">
+                  Nombres
+                </th>
+                <th style="width: 144.45px;">
+                  Apellido
+                </th>
+                <th style="width: 70px;">
+                  Acciones
+                </th>
+              </tr>
+              </thead>
+
+              <tbody>
+              <tr *ngFor="let usuario of listUser; let i = index" role="row" class="odd Tablas filaTabla">
+                <td>{{usuario.se_profile_identification}}</td>
+                <td>{{usuario.se_profile_name}}</td>
+                <td>{{usuario.se_profile_surname}}</td>
+                <td style="text-align: center">
+                  <label  onclick="desplegar(this)" id="{{i}}" class="botonDesplegar">
+                    <i class="ti-settings"></i>
+                    <div class="panelTabla" id="T{{i}}" style="display: none">
+                      <ul>
+                        <a><li (click)="[selectUser(usuario),modalCoordinate.hide()]"><label>Seleccionar</label></li></a>
+                      </ul>
+                    </div>
+                  </label>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </app-card>
+      </div>
+    </div>
+  </div>
+
+</app-modal-basic>

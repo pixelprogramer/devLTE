@@ -25,7 +25,7 @@ export class NewUserComponent implements OnInit {
     this._ElementService.pi_poValidarUsuario('NewUserComponent');
     this.token = localStorage.getItem('token');
     this.objUser = new Se_users('', '', '', '', '', '', '',
-      '000', '', '', '', '', '');
+      '000', '', '', '', '', '','');
     this.objProfile = new Se_profiles('', '', '', '', '', '',
       '', '', '', '000', '', '', '1', '');
   }
@@ -74,7 +74,7 @@ export class NewUserComponent implements OnInit {
     this._ElementService.pi_poLoader(true);
     this.listUserFunction();
     this.objUser = new Se_users('', '', '', '', '', '', '',
-      '000', '', '', '', '', '');
+      '000', '', '', '', '', '','');
     this.objProfile = new Se_profiles('', '', '', '', '', '',
       '', '', '', '000', '', '', '1', '');
     this._ElementService.pi_poLoader(false);
