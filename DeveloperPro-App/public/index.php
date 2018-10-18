@@ -36,6 +36,9 @@ require '..\app\Controller\Security\Role.php';
 require '..\app\Controller\Security\Sub_menu.php';
 require '..\app\Controller\Security\Header.php';
 require '..\app\Controller\Security\Group.php';
+require '..\app\Controller\Configuration\City.php';
+require '..\app\Controller\Configuration\Country.php';
+require '..\app\Controller\Configuration\Departement.php';
 
 # Services
 require '..\app\Service\Helpers.php';
