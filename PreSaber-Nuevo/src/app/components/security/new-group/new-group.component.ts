@@ -16,6 +16,7 @@ export class NewGroupComponent implements OnInit {
   public nameAlternate: any;
   public titleCoordinate: any;
   public listUser: Array<any>;
+  public listGroups: Array<any>;
   public token: any;
   public typeSelection: any;
 
@@ -28,6 +29,7 @@ export class NewGroupComponent implements OnInit {
     this.titleCoordinate = 'Emty';
     this.typeSelection = '';
     this.token = localStorage.getItem('token');
+    this.listGroupsFunction();
   }
 
   ngOnInit() {
@@ -79,36 +81,111 @@ export class NewGroupComponent implements OnInit {
   }
 
   newGroup() {
-    if (this.objGroup.se_group_description.trim() != '') {
-      if (this.objGroup.se_group_state != '000') {
-        if (this.objGroup.se_coordinator_id_fk_groups != '000') {
-          if (this.objGroup.se_alternate_id_fk_groups != '000') {
-            this._ElementService.pi_poLoader(true);
-            this._GroupService.newGroup(this.token, this.objGroup).subscribe(
-              respuesta => {
-                this._ElementService.pi_poValidarCodigo(respuesta);
-                if (respuesta.status == 'success'){
-                  this._ElementService.pi_poAlertaSuccess(respuesta.msg,respuesta.code);
-                  this._ElementService.pi_poLoader(false);
-                }else{
-                  this._ElementService.pi_poVentanaAlertaWarning(respuesta.code,respuesta.msg);
+    if (this.objGroup.se_group_id == '') {
+      if (this.objGroup.se_group_description.trim() != '') {
+        if (this.objGroup.se_group_state != '000') {
+          if (this.objGroup.se_coordinator_id_fk_groups != '000') {
+            if (this.objGroup.se_alternate_id_fk_groups != '000') {
+              this._ElementService.pi_poLoader(true);
+              this._GroupService.newGroup(this.token, this.objGroup).subscribe(
+                respuesta => {
+                  this._ElementService.pi_poValidarCodigo(respuesta);
+                  if (respuesta.status == 'success') {
+                    this.listGroupsFunction();
+                    this._ElementService.pi_poAlertaSuccess(respuesta.msg, respuesta.code);
+                    this._ElementService.pi_poLoader(false);
+                  } else {
+                    this._ElementService.pi_poVentanaAlertaWarning(respuesta.code, respuesta.msg);
+                    this._ElementService.pi_poLoader(false);
+                  }
+                }, error2 => {
                   this._ElementService.pi_poLoader(false);
                 }
-              }, error2 => {
-                this._ElementService.pi_poLoader(false);
-              }
-            )
+              )
+            } else {
+              this._ElementService.pi_poVentanaAlertaWarning('1000', 'No se selecciono el sub coordinador');
+            }
           } else {
-            this._ElementService.pi_poVentanaAlertaWarning('1000', 'No se selecciono el sub coordinador');
+            this._ElementService.pi_poVentanaAlertaWarning('1000', 'No se selecciono el coordinador');
           }
         } else {
-          this._ElementService.pi_poVentanaAlertaWarning('1000', 'No se selecciono el coordinador');
+          this._ElementService.pi_poVentanaAlertaWarning('1000', 'No se selecciono el estado');
         }
       } else {
-        this._ElementService.pi_poVentanaAlertaWarning('1000', 'No se selecciono el estado');
+        this._ElementService.pi_poVentanaAlertaWarning('1000', 'La descripcion es requerida');
       }
     } else {
-      this._ElementService.pi_poVentanaAlertaWarning('1000', 'La descripcion es requerida');
+      this._ElementService.pi_poVentanaAlertaWarning('1000', 'Lo sentimos este es un grupo seleccionado');
     }
+
+  }
+
+  listGroupsFunction() {
+    this._ElementService.pi_poLoader(true);
+    this._GroupService.listGroup(this.token).subscribe(
+      respuesta => {
+        this._ElementService.pi_poValidarCodigo(respuesta);
+        if (respuesta.status == 'success') {
+          this.listGroups = respuesta.data;
+          this._ElementService.pi_poLoader(false);
+        } else {
+          this._ElementService.pi_poVentanaAlertaWarning(respuesta.code, respuesta.msg);
+          this._ElementService.pi_poLoader(false);
+        }
+      }, error2 => {
+        this._ElementService.pi_poLoader(false);
+      }
+    )
+  }
+
+  updatedGroup() {
+    if (this.objGroup.se_group_id != '') {
+      if (this.objGroup.se_group_description.trim() != '') {
+        if (this.objGroup.se_group_state != '000') {
+          if (this.objGroup.se_coordinator_id_fk_groups != '000') {
+            if (this.objGroup.se_alternate_id_fk_groups != '000') {
+              this._ElementService.pi_poLoader(true);
+              this._GroupService.updatedGroup(this.token, this.objGroup).subscribe(
+                respuesta => {
+                  this._ElementService.pi_poValidarCodigo(respuesta);
+                  if (respuesta.status == 'success') {
+                    this.listGroupsFunction();
+                    this._ElementService.pi_poAlertaSuccess(respuesta.msg, respuesta.code);
+                    this._ElementService.pi_poLoader(false);
+                  } else {
+                    this._ElementService.pi_poVentanaAlertaWarning(respuesta.code, respuesta.msg);
+                    this._ElementService.pi_poLoader(false);
+                  }
+                }, error2 => {
+                  this._ElementService.pi_poLoader(false);
+                }
+              )
+            } else {
+              this._ElementService.pi_poVentanaAlertaWarning('1000', 'No se selecciono el sub coordinador');
+            }
+          } else {
+            this._ElementService.pi_poVentanaAlertaWarning('1000', 'No se selecciono el coordinador');
+          }
+        } else {
+          this._ElementService.pi_poVentanaAlertaWarning('1000', 'No se selecciono el estado');
+        }
+      } else {
+        this._ElementService.pi_poVentanaAlertaWarning('1000', 'La descripcion es requerida');
+      }
+    } else {
+      this._ElementService.pi_poVentanaAlertaWarning('Lo sentimos, no se a seleccionado ningun grupo', '1000');
+    }
+  }
+
+  reset() {
+    this._ElementService.pi_poLoader(true);
+    this.objGroup = new Se_groups('', '', '000', '000', '000', '1');
+    this.listGroupsFunction();
+  }
+
+  selectGroup(group) {
+    this.objGroup = group;
+    this.nameCoordinate = group.se_name_coordinador;
+    this.nameAlternate = group.se_name_alternate;
   }
 }

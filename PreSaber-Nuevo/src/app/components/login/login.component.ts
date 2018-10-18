@@ -18,7 +18,7 @@ export class LoginComponent implements OnInit {
   position = "top-right";
   constructor(private _loginService:LoginService, private _ElementService: ElementsService,private _Router: Router,) {
     this.ObjUser =  new Se_users('','','','','','',
-      '','','','','','','');
+      '','','','','','','','');
   }
 
   ngOnInit() {

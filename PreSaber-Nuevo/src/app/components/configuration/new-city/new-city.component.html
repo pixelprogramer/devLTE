@@ -1,0 +1,197 @@
+<div style="position: absolute;
+    z-index: 1000;
+    width: 100%;
+    height: 100%;
+    background: #f3f3f382;
+    text-align: center;" id="loader">
+  <div>
+    <img style="
+    width: 18%;
+    height: 50%;
+    margin-top: 13%;" src="./assets/images/logo_loader.gif"/>
+  </div>
+</div>
+
+<ng2-toasty [position]="position"></ng2-toasty>
+<div id="seccionPrincipal">
+  <app-card [title]="'Crear usuarios'">
+    <div class="row">
+      <div class="col-md-12">
+        <button class="btn btnPropio" style="float: right;" (click)="reset()">
+          <i class="ti-wand"></i>Reset
+        </button>
+      </div>
+    </div>
+    <div class="row" id="datosBasicosCrearMenu">
+      <div class="col-sm-4 col-md-4">
+        <h4 class="sub-title">Pais</h4>
+        <select class="form-control"
+                (change)="listDeparmentFunction()"
+                [ngStyle]="{'border': objCountry.co_country_id == '' ? 'red solid 1px' : '#577928 solid 1px'}"
+                [(ngModel)]="objCountry.co_country_id">
+          <option  value="">Seleccione</option>
+          <option  *ngFor="let country of listCountry"  value="{{country.co_country_id}}">{{country.co_country_description}}</option>
+        </select>
+        <button class="btn btnPropio" style="width: 100%"  (click)="modalCountry.show()">Agregar</button>
+      </div>
+      <div class="col-sm-4 col-md-4">
+        <h4 class="sub-title">Departamento</h4>
+        <select class="form-control"
+                (change)="listCityFunction()"
+                [ngStyle]="{'border': objDepartament.co_department_id == '' ? 'red solid 1px' : '#577928 solid 1px'}"
+                [(ngModel)]="objDepartament.co_department_id">
+          <option value="">Seleccione</option>
+          <option *ngFor="let departament of listDepartament" value="{{departament.co_department_id}}">{{departament.co_department_description}}</option>
+        </select>
+        <button class="btn btnPropio" style="width: 100%" [disabled]="objCountry.co_country_id == ''" (click)="modalDepartament.show()">Agregar</button>
+      </div>
+      <div class="col-sm-4 col-md-4">
+        <h4 class="sub-title">Ciudad</h4>
+        <select class="form-control"
+                [ngStyle]="{'border': objCity.co_city_id == '' ? 'red solid 1px' : '#577928 solid 1px'}"
+                [(ngModel)]="objCity.co_city_id">
+          <option value="">Seleccione</option>
+          <option *ngFor="let city of listCities" value="{{city.co_city_id}}">{{city.co_citie_description}}</option>
+        </select>
+        <button class="btn btnPropio" style="width: 100%" [disabled]="objDepartament.co_department_id == ''" (click)="modalDities.show()">Agregar</button>
+      </div>
+    </div>
+    <div class="col-md-12" style="margin-top: 10px;" >
+      <div class="row" style="float: right; " id="botonesDatosBasicosCrearMenu">
+        <button style="padding: 5px; margin: 5px" class="btn btn-sm btnPropio" id="btnCrearMenu"
+                (click)="newUser()">
+          Crear usuario
+        </button>
+
+        <button style="padding: 5px; margin: 5px" class="btn btn-sm btnPropio" id="btnActualizarMenu" (click)="actualizarUsuario()">Actualizar usuario
+        </button>
+      </div>
+    </div>
+  </app-card>
+</div>
+<app-modal-basic #modalCountry>
+  <div class="app-modal-header">
+    <h4 class="modal-title">Agregar nuevo pais</h4>
+  </div>
+  <div class="app-modal-body">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-sm-4 col-md-4">
+            <h4 class="sub-title">Codigo</h4>
+            <input class="form-control" id="code" name="code" placeholder="Codgio"
+                   #descripcionExamen="ngModel"
+                   [ngStyle]="{'border': objCountry.co_country_code== '' ? 'red solid 1px' : '#577928 solid 1px'}"
+                   [(ngModel)]="objCountry.co_country_code">
+          </div>
+          <div class="col-sm-4 col-md-4">
+            <h4 class="sub-title">Descripcion</h4>
+            <input class="form-control" id="description" name="description" placeholder="Descripcion"
+                   #descripcionExamen="ngModel"
+                   [ngStyle]="{'border': objCountry.co_country_description== '' ? 'red solid 1px' : '#577928 solid 1px'}"
+                   [(ngModel)]="objCountry.co_country_description">
+          </div>
+          <div class="col-sm-4 col-md-4">
+            <h4 class="sub-title">Estado</h4>
+            <select class="form-control"
+                    [ngStyle]="{'border': objCountry.co_country_state == '000' ? 'red solid 1px' : '#577928 solid 1px'}"
+                    [(ngModel)]="objCountry.co_country_state">
+              <option value="000">Seleccione</option>
+              <option value="ACTIVO">Activo</option>
+              <option value="INACTIVO">Inactivo</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <button class="btn btnPropio" style="width: 100%" (click)="newCountry()">Crear</button>
+      </div>
+    </div>
+  </div>
+</app-modal-basic>
+<app-modal-basic #modalDepartament>
+  <div class="app-modal-header">
+    <h4 class="modal-title">Agregar nuevo departamento</h4>
+  </div>
+  <div class="app-modal-body">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-sm-4 col-md-4">
+            <h4 class="sub-title">Codigo</h4>
+            <input class="form-control" id="codeD" name="code" placeholder="Codgio"
+                   #descripcionExamen="ngModel"
+                   [ngStyle]="{'border': objDepartament.co_department_code== '' ? 'red solid 1px' : '#577928 solid 1px'}"
+                   [(ngModel)]="objDepartament.co_department_code">
+          </div>
+          <div class="col-sm-4 col-md-4">
+            <h4 class="sub-title">Descripcion</h4>
+            <input class="form-control" id="descriptionD" name="description" placeholder="Descripcion"
+                   #descripcionExamen="ngModel"
+                   [ngStyle]="{'border': objDepartament.co_department_description== '' ? 'red solid 1px' : '#577928 solid 1px'}"
+                   [(ngModel)]="objDepartament.co_department_description">
+          </div>
+          <div class="col-sm-4 col-md-4">
+            <h4 class="sub-title">Estado</h4>
+            <select class="form-control"
+                    [ngStyle]="{'border': objDepartament.co_department_state == '000' ? 'red solid 1px' : '#577928 solid 1px'}"
+                    [(ngModel)]="objDepartament.co_department_state">
+              <option value="000">Seleccione</option>
+              <option value="ACTIVO">Activo</option>
+              <option value="INACTIVO">Inactivo</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <button class="btn btnPropio" style="width: 100%" (click)="newDepartament()">Crear</button>
+      </div>
+    </div>
+  </div>
+</app-modal-basic>
+<app-modal-basic #modalDities>
+  <div class="app-modal-header">
+    <h4 class="modal-title">Agregar nuevo departamento</h4>
+  </div>
+  <div class="app-modal-body">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-sm-4 col-md-4">
+            <h4 class="sub-title">Codigo</h4>
+            <input class="form-control" id="codeC" name="code" placeholder="Codgio"
+                   #descripcionExamen="ngModel"
+                   [ngStyle]="{'border': objCity.co_citie_code== '' ? 'red solid 1px' : '#577928 solid 1px'}"
+                   [(ngModel)]="objCity.co_citie_code">
+          </div>
+          <div class="col-sm-4 col-md-4">
+            <h4 class="sub-title">Descripcion</h4>
+            <input class="form-control" id="descriptionC" name="description" placeholder="Descripcion"
+                   #descripcionExamen="ngModel"
+                   [ngStyle]="{'border': objCity.co_citie_description== '' ? 'red solid 1px' : '#577928 solid 1px'}"
+                   [(ngModel)]="objCity.co_citie_description">
+          </div>
+          <div class="col-sm-4 col-md-4">
+            <h4 class="sub-title">Estado</h4>
+            <select class="form-control"
+                    [ngStyle]="{'border': objCity.co_citie_state == '000' ? 'red solid 1px' : '#577928 solid 1px'}"
+                    [(ngModel)]="objCity.co_citie_state">
+              <option value="000">Seleccione</option>
+              <option value="ACTIVO">Activo</option>
+              <option value="INACTIVO">Inactivo</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <button class="btn btnPropio" style="width: 100%" (click)="newCity()">Crear</button>
+      </div>
+    </div>
+  </div>
+</app-modal-basic>

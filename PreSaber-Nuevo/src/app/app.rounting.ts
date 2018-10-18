@@ -8,6 +8,7 @@ import {NewMenuComponent} from "./components/security/new-menu/new-menu.componen
 import {NewRolComponent} from "./components/security/new-rol/new-rol.component";
 import {ManagerMenuComponent} from "./components/security/manager-menu/manager-menu.component";
 import {NewGroupComponent} from "./components/security/new-group/new-group.component";
+import {NewCityComponent} from "./components/configuration/new-city/new-city.component";
 
 
 const appRoutes: Routes = [
@@ -19,6 +20,8 @@ const appRoutes: Routes = [
   {path: 'administradorSistemas/security/user/newMenu', component: NewMenuComponent},
   {path: 'administradorSistemas/security/user/newGroup', component: NewGroupComponent},
   {path: 'administradorSistemas/security/user/managerMenu', component: ManagerMenuComponent},
+  //Rutes security
+  {path: 'administradorSistemas/configuration/all/city', component: NewCityComponent},
   //Routes erp
 
   //Routes academic

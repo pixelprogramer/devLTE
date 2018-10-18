@@ -1,5 +1,5 @@
 <div style="position: absolute;
-    z-index: 1000;
+    z-index: 10000000000000000;
     width: 100%;
     height: 100%;
     background: #f3f3f382;
@@ -62,15 +62,15 @@
           Crear
         </button>
 
-        <button style="padding: 5px; margin: 5px" class="btn btn-sm btnPropio" id="btnActualizarMenu" (click)="actualizarUsuario()">Actualizar
+        <button style="padding: 5px; margin: 5px" class="btn btn-sm btnPropio" id="btnActualizarMenu" (click)="updatedGroup()">Actualizar
         </button>
       </div>
     </div>
   </app-card>
-  <!--
+
   <div class="row">
     <div class="col-sm-12">
-      <app-card [title]="'Tabla de usuarios'">
+      <app-card [title]="'Tabla de grupos'">
         <div class="dataTables_scrollBody"
              style="position: relative; overflow: auto; max-height: 400px; width: 100%; margin-top: 10px">
 
@@ -79,28 +79,19 @@
             <thead>
             <tr role="row" style="height: 0px;">
               <th style="width: 144.45px;">
-                Documento
+                Codigo
               </th>
               <th style="width: 144.45px;">
-                Nombres
+                Descripcion
               </th>
               <th style="width: 144.45px;">
-                Apellido
+                Coordinador
               </th>
               <th style="width: 70px;">
-                Telefono
+                Sub coordinador
               </th>
               <th style="width: 70px;">
-                Correo
-              </th>
-              <th style="width: 70px;">
-                Rol
-              </th>
-              <th style="width: 30px;">
                 Estado
-              </th>
-              <th style="width: 70px;">
-                Ultimo ingreso
               </th>
               <th style="width: 70px;">
                 Acciones
@@ -109,21 +100,18 @@
             </thead>
 
             <tbody>
-            <tr *ngFor="let usuario of listUser; let i = index" role="row" class="odd Tablas filaTabla">
-              <td>{{usuario.se_profile_identification}}</td>
-              <td>{{usuario.se_profile_name}}</td>
-              <td>{{usuario.se_profile_surname}}</td>
-              <td>{{usuario.se_profile_phone}}</td>
-              <td>{{usuario.se_user_email}}</td>
-              <td><span class="pcoded-badge label label-success">{{usuario.se_role_id_fk_users}}</span></td>
-              <td>{{usuario.se_profile_state}}</td>
-              <td>{{usuario.se_user_last_connection}}</td>
+            <tr *ngFor="let group of listGroups; let j = index" role="row" class="odd Tablas filaTabla">
+              <td>{{group.se_group_id}}</td>
+              <td>{{group.se_group_description}}</td>
+              <td>{{group.se_name_coordinador}}</td>
+              <td>{{group.se_name_alternate}}</td>
+              <td>{{group.se_group_state}}</td>
               <td style="text-align: center">
-                <label  onclick="desplegar(this)" id="{{i}}" class="botonDesplegar">
+                <label  onclick="desplegar(this)" id="{{j}}" class="botonDesplegar">
                   <i class="ti-settings"></i>
-                  <div class="panelTabla" id="T{{i}}" style="display: none">
+                  <div class="panelTabla" id="T{{j}}" style="display: none">
                     <ul>
-                      <a><li (click)="selectUser(usuario)"><label>Seleccionar</label></li></a>
+                      <a><li (click)="selectGroup(group)"><label>Seleccionar</label></li></a>
                     </ul>
                   </div>
                 </label>
@@ -135,7 +123,7 @@
       </app-card>
     </div>
   </div>
-  -->
+
 </div>
 <app-modal-basic #modalCoordinate>
   <div class="app-modal-header">
@@ -175,7 +163,7 @@
                 <td style="text-align: center">
                   <label  onclick="desplegar(this)" id="{{i}}" class="botonDesplegar">
                     <i class="ti-settings"></i>
-                    <div class="panelTabla" id="T{{i}}" style="display: none">
+                    <div class="panelTabla" id="TT{{i}}" style="display: none">
                       <ul>
                         <a><li (click)="[selectUser(usuario),modalCoordinate.hide()]"><label>Seleccionar</label></li></a>
                       </ul>

@@ -6,27 +6,22 @@ import {HttpClient} from "@angular/common/http";
 
 @Injectable()
 
-export class GroupService{
+export class CountryService{
   public url:string;
   constructor(public _Http: HttpClient){
     this.url = GLOBAL.url;
   }
 
-  listGroup(token): Observable <any>{
+  listCountry(token): Observable <any>{
     let parametros = 'token='+token;
     let header = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
-    return this._Http.post(this.url+'api-security/groups/list',parametros,{headers:header})
+    return this._Http.post(this.url+'api-configuration/countries/list',parametros,{headers:header})
   }
-  newGroup(token,menu): Observable <any>{
+  newCountry(token,menu): Observable <any>{
     let json = JSON.stringify(menu);
     let parametros = 'token='+token+'&json='+json;
     let header = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
-    return this._Http.post(this.url+'api-security/groups/new',parametros,{headers:header})
+    return this._Http.post(this.url+'api-configuration/countries/new',parametros,{headers:header})
   }
-  updatedGroup(token,menu): Observable <any>{
-    let json = JSON.stringify(menu);
-    let parametros = 'token='+token+'&json='+json;
-    let header = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
-    return this._Http.post(this.url+'api-security/groups/new',parametros,{headers:header})
-  }
+
 }

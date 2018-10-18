@@ -21,6 +21,7 @@ import { NewMenuComponent } from './components/security/new-menu/new-menu.compon
 import { NewRolComponent } from './components/security/new-rol/new-rol.component';
 import { ManagerMenuComponent } from './components/security/manager-menu/manager-menu.component';
 import { NewGroupComponent } from './components/security/new-group/new-group.component';
+import { NewCityComponent } from './components/configuration/new-city/new-city.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { NewGroupComponent } from './components/security/new-group/new-group.com
   NewMenuComponent,
   NewRolComponent,
   ManagerMenuComponent,
-  NewGroupComponent],
+  NewGroupComponent,
+  NewCityComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
