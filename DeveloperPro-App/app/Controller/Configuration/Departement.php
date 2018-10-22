@@ -19,18 +19,29 @@ $app->group('/api-configuration/', function () {
                         $connection = new \Service\Connections();
                         $parametrosJson = json_decode($json);
                         $co_department_code = strtolower((isset($parametrosJson->co_department_code)) ? $parametrosJson->co_department_code : null);
-                        $co_department_description = strtolower((isset($parametrosJson->co_department_description)) ? $parametrosJson->co_department_description : null);
+                        $co_department_description = trim(strtolower((isset($parametrosJson->co_department_description)) ? $parametrosJson->co_department_description : null));
                         $co_department_state = (isset($parametrosJson->co_department_state)) ? $parametrosJson->co_department_state : null;
                         $co_country_id_fk_departments = (isset($parametrosJson->co_country_id_fk_departments)) ? $parametrosJson->co_country_id_fk_departments : null;
-                        $sql = "INSERT INTO configuration.co_departments(
+                        $sql = "select co_depa.* from configuration.co_departments co_depa 
+                            where co_depa.co_department_active = '1' and co_depa.co_country_id_fk_departments = '$co_country_id_fk_departments' and 
+                            co_depa.co_department_description like '$co_department_description'";
+                        $r = $connection->complexQueryAssociative($sql);
+                        if ($r == 0) {
+                            $sql = "INSERT INTO configuration.co_departments(
                                 co_country_id_fk_departments, co_department_description, co_department_code, 
                                 co_department_state, co_department_active, co_department_created_at)
                                 VALUES ('$co_country_id_fk_departments', '$co_department_description', '$co_department_code', '$co_department_state', '1', '$fecha_ingreso');";
-                        $connection->complexQuery($sql);
-                        $data = [
-                            'code' => '1001',
-                            'msg'=>'Departamento creado de forma correcta'
-                        ];
+                            $connection->complexQuery($sql);
+                            $data = [
+                                'code' => '1001',
+                                'msg' => 'Departamento creado de forma correcta'
+                            ];
+                        } else {
+                            $data = [
+                                'code' => '1007',
+                                'msg' => 'Este departamento ya existe: ' . $co_department_description
+                            ];
+                        }
                     } else {
                         $data = [
                             'code' => '1008'
@@ -52,7 +63,7 @@ $app->group('/api-configuration/', function () {
         $this->post('list', function (Request $request) {
             $parametros = $request->getParsedBody();
             $token = (isset($parametros['token'])) ? $parametros['token'] : null;
-            $id= (isset($parametros['id'])) ? $parametros['id'] : null;
+            $id = (isset($parametros['id'])) ? $parametros['id'] : null;
             if ($token != null) {
                 $jwt = new \Service\JwtAuth();
                 $helper = new \Service\Helpers();

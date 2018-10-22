@@ -30,15 +30,20 @@ $dotEnv->load();
 
 
 # Controllers
+//Security
 require '..\app\Controller\Security\User.php';
 require '..\app\Controller\Security\Menus.php';
 require '..\app\Controller\Security\Role.php';
 require '..\app\Controller\Security\Sub_menu.php';
 require '..\app\Controller\Security\Header.php';
 require '..\app\Controller\Security\Group.php';
+//Configuration
 require '..\app\Controller\Configuration\City.php';
 require '..\app\Controller\Configuration\Country.php';
 require '..\app\Controller\Configuration\Departement.php';
+//Erp
+require '..\app\Controller\Erp\InventoryType.php';
+
 
 # Services
 require '..\app\Service\Helpers.php';

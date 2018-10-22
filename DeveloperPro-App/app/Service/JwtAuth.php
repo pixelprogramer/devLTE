@@ -87,6 +87,7 @@
                 'telefono' => $usuario['se_profile_phone'],
                 'direccion' => $usuario['se_profile_address'],
                 'rol' => $usuario['se_role_id_fk_users'],
+                'estado' => $usuario['se_user_state'],
                 'permisos'=>$r,
                 'menu'=>$permisos,
                 'fecha_creacion' => $usuario['se_user_created_at'],
