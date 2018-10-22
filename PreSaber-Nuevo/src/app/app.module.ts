@@ -22,6 +22,9 @@ import { NewRolComponent } from './components/security/new-rol/new-rol.component
 import { ManagerMenuComponent } from './components/security/manager-menu/manager-menu.component';
 import { NewGroupComponent } from './components/security/new-group/new-group.component';
 import { NewCityComponent } from './components/configuration/new-city/new-city.component';
+import { ValidateCodeComponent } from './components/public/validate-code/validate-code.component';
+import { InventoryTypeComponent } from './components/erp/inventory-type/inventory-type.component';
+import { InventoryCategoryComponent } from './components/erp/inventory-category/inventory-category.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +34,10 @@ import { NewCityComponent } from './components/configuration/new-city/new-city.c
   NewRolComponent,
   ManagerMenuComponent,
   NewGroupComponent,
-  NewCityComponent],
+  NewCityComponent,
+  ValidateCodeComponent,
+  InventoryTypeComponent,
+  InventoryCategoryComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,

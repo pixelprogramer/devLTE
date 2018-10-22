@@ -9,6 +9,8 @@ import {NewRolComponent} from "./components/security/new-rol/new-rol.component";
 import {ManagerMenuComponent} from "./components/security/manager-menu/manager-menu.component";
 import {NewGroupComponent} from "./components/security/new-group/new-group.component";
 import {NewCityComponent} from "./components/configuration/new-city/new-city.component";
+import {InventoryTypeComponent} from "./components/erp/inventory-type/inventory-type.component";
+import {InventoryCategoryComponent} from "./components/erp/inventory-category/inventory-category.component";
 
 
 const appRoutes: Routes = [
@@ -20,16 +22,18 @@ const appRoutes: Routes = [
   {path: 'administradorSistemas/security/user/newMenu', component: NewMenuComponent},
   {path: 'administradorSistemas/security/user/newGroup', component: NewGroupComponent},
   {path: 'administradorSistemas/security/user/managerMenu', component: ManagerMenuComponent},
-  //Rutes security
+  //Rutes conguration
   {path: 'administradorSistemas/configuration/all/city', component: NewCityComponent},
   //Routes erp
-
+  {path: 'administradorSistemas/erp/inventoryType', component: InventoryTypeComponent},
+  {path: 'administradorSistemas/erp/inventoryCategory', component: InventoryCategoryComponent},
   //Routes academic
 
   //HomeRole
   {path:'administradorSistemas/Home',component:HomeAdministradorSistemasComponent},
 
   //Public
+  {path: 'public/validatePage/codeActivation', component: ValidarPaginaComponent},
   {path: 'login', component: LoginComponent},
   {path: '**', component: ValidarPaginaComponent}
 

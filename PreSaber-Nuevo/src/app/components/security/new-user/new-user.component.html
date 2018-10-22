@@ -54,6 +54,13 @@
     </div>
     <div class="row" style="margin-top: 10px">
       <div class="col-sm-3 col-md-3">
+        <h4 class="sub-title">Celular</h4>
+        <input class="form-control" id="cell" name="descripcion" placeholder="Celular"
+               #descripcionExamen="ngModel"
+               [ngStyle]="{'border': objProfile.se_profile_phone_cell== '' ? 'red solid 1px' : '#577928 solid 1px'}"
+               [(ngModel)]="objProfile.se_profile_phone_cell">
+      </div>
+      <div class="col-sm-3 col-md-3">
         <h4 class="sub-title">Correo</h4>
         <input class="form-control" id="correo" name="descripcion" placeholder="Correo"
                #descripcionExamen="ngModel"
@@ -80,6 +87,76 @@
         </select>
       </div>
     </div>
+    <div class="row" style="margin-top: 10px">
+      <div class="col-sm-3 col-md-3">
+        <h4 class="sub-title">Fecha de nacimiento</h4>
+        <form class="form-inline">
+          <div class="form-group" style="width: 100%">
+            <div class="input-group">
+              <input class="form-control"  placeholder="yyyy-mm-dd" name="dp" [minDate]="minDate"  [(ngModel)]="fechaAplicacion" ngbDatepicker
+                     #d="ngbDatepicker">
+              <div class="input-group-append bg-default" (click)="d.toggle()" >
+                <label class="input-group-text" ><span class="icofont icofont-ui-calendar" ></span></label>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="col-sm-3 col-md-3">
+        <h4 class="sub-title">Pais</h4>
+        <select class="form-control"
+                (change)="listDeparmentFunction()"
+                [ngStyle]="{'border': objCountry.co_country_id == '' ? 'red solid 1px' : '#577928 solid 1px'}"
+                [(ngModel)]="objCountry.co_country_id">
+          <option  value="">Seleccione</option>
+          <option  *ngFor="let country of listCountry"  value="{{country.co_country_id}}">{{country.co_country_description}}</option>
+        </select>
+      </div>
+      <div class="col-sm-3 col-md-3">
+        <h4 class="sub-title">Departamento</h4>
+        <select class="form-control"
+                (change)="listCityFunction()"
+                [ngStyle]="{'border': objDepartament.co_department_id == '' ? 'red solid 1px' : '#577928 solid 1px'}"
+                [(ngModel)]="objDepartament.co_department_id">
+          <option value="">Seleccione</option>
+          <option *ngFor="let departament of listDepartament" value="{{departament.co_department_id}}">{{departament.co_department_description}}</option>
+        </select>
+      </div>
+      <div class="col-sm-3 col-md-3">
+        <h4 class="sub-title">Ciudad</h4>
+        <select class="form-control"
+                [ngStyle]="{'border': objProfile.co_city_id_fk_profiles == '' ? 'red solid 1px' : '#577928 solid 1px'}"
+                [(ngModel)]="objProfile.co_city_id_fk_profiles">
+          <option value="">Seleccione</option>
+          <option *ngFor="let city of listCities" value="{{city.co_city_id}}">{{city.co_citie_description}}</option>
+        </select>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-4 col-md-4">
+        <h4 class="sub-title">Direccion de vivienda</h4>
+        <input class="form-control" id="nombre" name="descripcion" placeholder="Nombre"
+               #descripcionExamen="ngModel"
+               [ngStyle]="{'border': objProfile.se_profile_address== '' ? 'red solid 1px' : '#577928 solid 1px'}"
+               [(ngModel)]="objProfile.se_profile_address">
+      </div>
+      <div class="col-sm-4 col-md-4">
+        <h4 class="sub-title">Grupo</h4>
+        <select class="form-control"
+                [ngStyle]="{'border': objUser.se_group_id_fk_users == '' ? 'red solid 1px' : '#577928 solid 1px'}"
+                [(ngModel)]="objUser.se_group_id_fk_users">
+          <option value="">Seleccione</option>
+          <option *ngFor="let group of listGroups" value="{{group.se_group_id}}">{{group.se_group_description}}</option>
+        </select>
+      </div>
+      <div class="col-sm-4 col-md-4">
+        <h4 class="sub-title">Empleado</h4>
+        <div class="input-group">
+          <ui-switch class="js-single" color="#1abc9c" switchColor="#fff" size="small" checked
+                     [(ngModel)]="objUser.se_user_clerk"></ui-switch>
+        </div>
+      </div>
+    </div>
     <div class="col-md-12" style="margin-top: 10px;" >
       <div class="row" style="float: right; " id="botonesDatosBasicosCrearMenu">
         <button style="padding: 5px; margin: 5px" class="btn btn-sm btnPropio" id="btnCrearMenu"
@@ -87,7 +164,7 @@
           Crear usuario
         </button>
 
-        <button style="padding: 5px; margin: 5px" class="btn btn-sm btnPropio" id="btnActualizarMenu" (click)="actualizarUsuario()">Actualizar usuario
+        <button style="padding: 5px; margin: 5px" class="btn btn-sm btnPropio" id="btnActualizarMenu" (click)="updatedUser()">Actualizar usuario
         </button>
       </div>
     </div>
@@ -148,6 +225,7 @@
                   <div class="panelTabla" id="T{{i}}" style="display: none">
                     <ul>
                       <a><li (click)="selectUser(usuario)"><label>Seleccionar</label></li></a>
+                      <a><li (click)="resetPassword(usuario)"><label>Reiniciar contraseña</label></li></a>
                     </ul>
                   </div>
                 </label>

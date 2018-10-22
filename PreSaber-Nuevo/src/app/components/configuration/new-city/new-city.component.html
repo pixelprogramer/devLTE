@@ -14,7 +14,7 @@
 
 <ng2-toasty [position]="position"></ng2-toasty>
 <div id="seccionPrincipal">
-  <app-card [title]="'Crear usuarios'">
+  <app-card [title]="'Nuevo P,D,C'">
     <div class="row">
       <div class="col-md-12">
         <button class="btn btnPropio" style="float: right;" (click)="reset()">
@@ -54,17 +54,6 @@
           <option *ngFor="let city of listCities" value="{{city.co_city_id}}">{{city.co_citie_description}}</option>
         </select>
         <button class="btn btnPropio" style="width: 100%" [disabled]="objDepartament.co_department_id == ''" (click)="modalDities.show()">Agregar</button>
-      </div>
-    </div>
-    <div class="col-md-12" style="margin-top: 10px;" >
-      <div class="row" style="float: right; " id="botonesDatosBasicosCrearMenu">
-        <button style="padding: 5px; margin: 5px" class="btn btn-sm btnPropio" id="btnCrearMenu"
-                (click)="newUser()">
-          Crear usuario
-        </button>
-
-        <button style="padding: 5px; margin: 5px" class="btn btn-sm btnPropio" id="btnActualizarMenu" (click)="actualizarUsuario()">Actualizar usuario
-        </button>
       </div>
     </div>
   </app-card>
@@ -155,7 +144,7 @@
 </app-modal-basic>
 <app-modal-basic #modalDities>
   <div class="app-modal-header">
-    <h4 class="modal-title">Agregar nuevo departamento</h4>
+    <h4 class="modal-title">Agregar nuevo ciudad</h4>
   </div>
   <div class="app-modal-body">
     <div class="row">

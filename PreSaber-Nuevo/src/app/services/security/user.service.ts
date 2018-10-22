@@ -28,16 +28,26 @@ export class UserService{
     let header = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
     return this._Http.post(this.url+'api-security/menu/listMenuComplet',parametros,{headers:header})
   }
-  newMenu(token,menu): Observable <any>{
-    let json = JSON.stringify(menu);
-    let parametros = 'token='+token+'&json='+json;
+  newUser(token,objProfile,objUser): Observable <any>{
+    let jsonUser = JSON.stringify(objUser);
+    let jsonProfile = JSON.stringify(objProfile);
+    let parametros = 'token='+token+'&jsonUser='+jsonUser+'&jsonProfile='+jsonProfile;
     let header = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
-    return this._Http.post(this.url+'api-security/menu/newMenu',parametros,{headers:header})
+    return this._Http.post(this.url+'api-security/users/newUser',parametros,{headers:header})
   }
-  updatedMenu(token,menu): Observable <any>{
-    let json = JSON.stringify(menu);
-    let parametros = 'token='+token+'&json='+json;
+  resetPassword(token,objProfile,objUser): Observable <any>{
+    let jsonUser = JSON.stringify(objUser);
+    let jsonProfile = JSON.stringify(objProfile);
+    let parametros = 'token='+token+'&jsonUser='+jsonUser+'&jsonProfile='+jsonProfile;
     let header = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
-    return this._Http.post(this.url+'api-security/menu/updatedMenu',parametros,{headers:header})
+    return this._Http.post(this.url+'api-security/users/resetPassword',parametros,{headers:header})
   }
+  updatedUser(token,objProfile,objUser): Observable <any>{
+    let jsonUser = JSON.stringify(objUser);
+    let jsonProfile = JSON.stringify(objProfile);
+    let parametros = 'token='+token+'&jsonUser='+jsonUser+'&jsonProfile='+jsonProfile;
+    let header = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
+    return this._Http.post(this.url+'api-security/users/updated',parametros,{headers:header})
+  }
+
 }

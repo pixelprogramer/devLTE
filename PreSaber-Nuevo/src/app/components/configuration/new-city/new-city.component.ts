@@ -14,8 +14,8 @@ import {CityService} from "../../../services/configuration/city.service";
   providers: [ElementsService, CountryService, DepartamentService, CityService]
 })
 export class NewCityComponent implements OnInit {
-  public listCountry: Array<Co_countries>;
   public token: any;
+  public listCountry: Array<Co_countries>;
   public objCountry: Co_countries;
   public objDepartament: Co_departments;
   public objCity: Co_cities;

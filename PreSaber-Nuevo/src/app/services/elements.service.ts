@@ -8,6 +8,7 @@ import {ToastData, ToastOptions, ToastyService} from 'ng2-toasty';
 import {OnInit} from "@angular/core";
 import {Router} from "@angular/router";
 import swal from 'sweetalert2';
+import {Se_users} from "../models/security/se_users";
 
 
 declare var alertify: any;
@@ -20,10 +21,13 @@ export class ElementsService implements OnInit {
   public user: any;
   public userIdentity: any;
   public home: string;
+  public ObjUser: Se_users;
 
   constructor(public _http: HttpClient, private _Router: Router, private toastyService: ToastyService) {
     this.url = GLOBAL.url;
-    this.positon='top-right';
+    this.positon = 'top-right';
+    this.ObjUser = new Se_users('', '', '', '', '', '',
+      '', '', '', '', '', '', '', '');
   }
 
   ngOnInit() {
@@ -31,7 +35,7 @@ export class ElementsService implements OnInit {
   }
 
 
-  pi_poAlertaSuccess(mensaje,titulo) {
+  pi_poAlertaSuccess(mensaje, titulo) {
 
     this.positon = 'top-right';
     const toastOptions: ToastOptions = {
@@ -44,7 +48,7 @@ export class ElementsService implements OnInit {
     this.toastyService.success(toastOptions);
   }
 
-  pi_poAlertaError(mensaje,titulo) {
+  pi_poAlertaError(mensaje, titulo) {
     this.positon = 'top-right';
     const toastOptions: ToastOptions = {
       title: titulo,
@@ -56,7 +60,7 @@ export class ElementsService implements OnInit {
     this.toastyService.error(toastOptions);
   }
 
-  pi_poAlertaWarning(mensaje,titulo) {
+  pi_poAlertaWarning(mensaje, titulo) {
     this.positon = 'top-right';
     const toastOptions: ToastOptions = {
       title: titulo,
@@ -68,7 +72,7 @@ export class ElementsService implements OnInit {
     this.toastyService.warning(toastOptions);
   }
 
-  pi_poAlertaMensaje(mensaje,titulo) {
+  pi_poAlertaMensaje(mensaje, titulo) {
     this.positon = 'top-right';
     const toastOptions: ToastOptions = {
       title: titulo,
@@ -92,44 +96,168 @@ export class ElementsService implements OnInit {
     this.userIdentity = this.getUserIdentity();
     let validacion = 0;
     if (this.userIdentity != null) {
-      for (let i in this.userIdentity.permisos) {
-        if (this.userIdentity.permisos[i].se_menu_component_name == nombreVista) {
-          validacion = 1;
+      if (this.userIdentity.estado.toLowerCase() != 'pendiente') {
+        for (let i in this.userIdentity.permisos) {
+          if (this.userIdentity.permisos[i].se_menu_component_name == nombreVista) {
+            validacion = 1;
+          }
         }
-      }
-      if (validacion == 1) {
+        if (validacion == 1) {
 
+        } else {
+          this.home = this.userIdentity.rol_descripcion;
+          this._Router.navigate([this.userIdentity.permisos[0].se_menu_rute]);
+          let posisicon = 0;
+          let validacion = 0
+          for (var i = 0; i < this.userIdentity.permisos.length; i++) {
+            if (this.userIdentity.permisos[i].se_menu_default_page == '1' || this.userIdentity.permisos[i].se_menu_default_page == true) {
+              validacion = 1;
+              posisicon = i;
+
+            }
+          }
+          if (validacion == 1) {
+            this._Router.navigate([this.userIdentity.permisos[posisicon].se_menu_rute]);
+            swal(
+              'Cancelled',
+              'Lo sentimos, no cuentas con los permisos suficientes para ingresar a este modulo',
+              'error'
+            );
+          } else {
+            this.pi_poVentanaAlertaWarning('LTE-001', 'Lo sentimos, por favor comunicarse con el ' +
+              'Departamento de sistemas, No se encontro la pagina predeterminada')
+          }
+        }
       } else {
-        this.home = this.userIdentity.rol_descripcion;
-        this._Router.navigate([this.userIdentity.permisos[0].se_menu_rute]);
         let posisicon = 0;
-        let validacion=0
-        for (var i=0; i<this.userIdentity.permisos.length; i++)
-        {
-          if (this.userIdentity.permisos[i].se_menu_default_page == '1' || this.userIdentity.permisos[i].se_menu_default_page == true )
-          {
+        let validacion = 0
+        for (var i = 0; i < this.userIdentity.permisos.length; i++) {
+          if (this.userIdentity.permisos[i].se_menu_default_page == '1' || this.userIdentity.permisos[i].se_menu_default_page == true) {
             validacion = 1;
             posisicon = i;
 
           }
         }
-        if (validacion == 1)
-        {
+        if (validacion == 1) {
           this._Router.navigate([this.userIdentity.permisos[posisicon].se_menu_rute]);
-          swal(
-            'Cancelled',
-            'Lo sentimos, no cuentas con los permisos suficientes para ingresar a este modulo',
-            'error'
-          );
-        }else
-        {
-          this.pi_poVentanaAlertaWarning('LTE-001','Lo sentimos, por favor comunicarse con el ' +
-            'Departamento de sistemas, No se encontro la pagina predeterminada')
         }
+        this.ObjUser.se_user_email = this.userIdentity.documento
+        swal.mixin({
+          input: 'password',
+          showCancelButton: false,
+          confirmButtonText: 'Verificar!',
+          showLoaderOnConfirm: true,
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          progressSteps: ['1', '2']
+        }).queue([
+          {
+            title: 'Codigo de activacion',
+            text: 'Por favor ingresar el codigo de activacion que fue enviado a su correo electronico'
+          },
+          {
+            title: 'Cambio de contraseña',
+            text: 'Por seguridad es necesario que ingrese la nueva contraseña de tu cuenta'
+          },
+        ]).then((result) => {
+          if (result.value) {
+            if (result.value[0].trim() != '' && result.value[0].trim() != ''){
+              this.ObjUser.se_user_code = result.value[0];
+              this.ObjUser.se_user_password = result.value[1];
+              this.validateCode(localStorage.getItem('token'), this.ObjUser).subscribe(
+                respuesta => {
+                  if (respuesta.status == 'success') {
+                    this.pi_poVentanaAlertaWarning(respuesta.code, respuesta.msg);
+                    this.userIdentity.estado = 'activo';
+                    localStorage.setItem('userIdentityltesoftware',JSON.stringify(this.userIdentity));
+                    if (validacion == 1) {
+                      this._Router.navigate([this.userIdentity.permisos[posisicon].se_menu_rute]);
+                    }
+                  } else {
+                    this.pi_poAlertaError(respuesta.msg,respuesta.code);
+                    this.validate();
+                  }
+                }, error2 => {
+
+                }
+              )
+            }else
+            {
+              this.pi_poAlertaError('Todos los campos son requeridos','1000');
+              this.validate();
+            }
+
+          }
+        })
       }
+
     } else {
       this._Router.navigate(['']);
     }
+  }
+
+  validate() {
+    let posisicon = 0;
+    let validacion = 0
+    for (var i = 0; i < this.userIdentity.permisos.length; i++) {
+      if (this.userIdentity.permisos[i].se_menu_default_page == '1' || this.userIdentity.permisos[i].se_menu_default_page == true) {
+        validacion = 1;
+        posisicon = i;
+
+      }
+    }
+    if (validacion == 1) {
+      this._Router.navigate([this.userIdentity.permisos[posisicon].se_menu_rute]);
+    }
+    this.ObjUser.se_user_email = this.userIdentity.documento;
+    swal.mixin({
+      input: 'password',
+      showCancelButton: false,
+      confirmButtonText: 'Verificar!',
+      showLoaderOnConfirm: true,
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      progressSteps: ['1', '2']
+    }).queue([
+      {
+        title: 'Codigo de activacion',
+        text: 'Por favor ingresar el codigo de activacion que fue enviado a su correo electronico'
+      },
+      {
+        title: 'Cambio de contraseña',
+        text: 'Por seguridad es necesario que ingrese la nueva contraseña de tu cuenta'
+      },
+    ]).then((result) => {
+      if (result.value) {
+        if (result.value[0].trim() != '' && result.value[0].trim() != ''){
+          this.ObjUser.se_user_code = result.value[0];
+          this.ObjUser.se_user_password = result.value[1];
+          this.validateCode(localStorage.getItem('token'), this.ObjUser).subscribe(
+            respuesta => {
+              if (respuesta.status == 'success') {
+                this.pi_poVentanaAlertaWarning(respuesta.code, respuesta.msg);
+                this.userIdentity.estado = 'activo';
+                localStorage.setItem('userIdentityltesoftware',JSON.stringify(this.userIdentity));
+                if (validacion == 1) {
+                  this._Router.navigate([this.userIdentity.permisos[posisicon].se_menu_rute]);
+                }
+              } else {
+                this.pi_poAlertaError(respuesta.msg,respuesta.code);
+                this.validate();
+              }
+            }, error2 => {
+
+            }
+          )
+        }else
+        {
+
+          this.pi_poAlertaError('Todos los campos son requeridos','1000');
+          this.validate();
+        }
+
+      }
+    })
   }
 
   pi_poValidarCodigo(respuesta) {
@@ -153,13 +281,15 @@ export class ElementsService implements OnInit {
     }
 
   }
-  pi_poLoader(visible){
-    if(visible == true){
+
+  pi_poLoader(visible) {
+    if (visible == true) {
       $("#loader").show();
-    }else{
+    } else {
       $("#loader").hide();
     }
   }
+
   pi_poVentanaAlerta(titulo, mensaje) {
     swal({
       title: titulo,
@@ -167,14 +297,15 @@ export class ElementsService implements OnInit {
       type: 'success'
     }).catch(swal.noop);
   }
-  pi_poVentanaAlertaWarning(titulo,mensaje)
-  {
+
+  pi_poVentanaAlertaWarning(titulo, mensaje) {
     swal({
       title: titulo,
       text: mensaje,
       type: 'warning'
     }).catch(swal.noop);
   }
+
   alerts(tipe, msg) {
     let data = '';
     if (tipe == 1 || tipe == '1') {
@@ -218,7 +349,12 @@ export class ElementsService implements OnInit {
     return this.user;
   }
 
-
+  validateCode(token, objUser): Observable<any> {
+    let jsonUser = JSON.stringify(objUser);
+    let parametros = 'token=' + token + '&json=' + jsonUser;
+    let header = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
+    return this._http.post(this.url + 'api-security/users/validateCode', parametros, {headers: header})
+  }
 }
 
 
