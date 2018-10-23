@@ -5,7 +5,7 @@ use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
 $app->group('/api-erp/', function () {
-    $this->group('inventoryType/', function () {
+    $this->group('inventory/', function () {
         $this->post('new', function (Request $request) {
             $helper = new \Service\Helpers();
             $parametros = $request->getParsedBody();
@@ -18,14 +18,18 @@ $app->group('/api-erp/', function () {
                     $fecha_ingreso = date('Y-m-d H:i');
                     $connection = new \Service\Connections();
                     $parametros = json_decode($json);
-                    $er_inventory_type_description = trim(strtolower((isset($parametros->er_inventory_type_description)) ? $parametros->er_inventory_type_description : null));
-                    $sql = "select * from erp.er_inventory_types  er_it where er_it.er_inventory_type_description like '$er_inventory_type_description'";
+                    $er_inventory_description = trim(strtolower((isset($parametros->er_inventory_description)) ? $parametros->er_inventory_description : null));
+                    $sql = "select * from erp.er_inventories  er_i where er_i.er_inventory_description like '$er_inventory_description' and er_i.er_inventory_active = '1'";
                     $r = $connection->complexQueryNonAssociative($sql);
                     if ($r == 0) {
-                        $er_inventory_type_state = trim(strtolower((isset($parametros->er_inventory_type_state)) ? $parametros->er_inventory_type_state : null));
-                        $sql = "INSERT INTO erp.er_inventory_types(
-                                     er_inventory_type_description, er_inventory_type_state, er_inventory_type_active, er_inventory_type_created_at)
-                                    VALUES ('$er_inventory_type_description', '$er_inventory_type_state', '1', '$fecha_ingreso');";
+                        $userToken = $jwt->checkToken($token, true);
+                        $user_id = $userToken->sub;
+                        $er_inventory_state = trim(strtolower((isset($parametros->er_inventory_state)) ? $parametros->er_inventory_state : null));
+                        $er_inventory_category_id_fk_inventories = trim(strtolower((isset($parametros->er_inventory_category_id_fk_inventories)) ? $parametros->er_inventory_category_id_fk_inventories : null));
+                        $sql = "INSERT INTO erp.er_inventories(
+                                er_inventory_category_id_fk_inventories, er_inventory_description, er_inventory_state,
+                                 er_inventory_active, er_inventory_created_at, se_user_id_fk_inventorie)
+                                VALUES ('$er_inventory_category_id_fk_inventories', '$er_inventory_description', '$er_inventory_state', '1', '$fecha_ingreso', '$user_id');";
                         $connection->simpleQuery($sql);
                         $data = [
                             'code' => '1001',
@@ -62,24 +66,34 @@ $app->group('/api-erp/', function () {
                         $fecha_ingreso = date('Y-m-d H:i');
                         $connection = new \Service\Connections();
                         $parametros = json_decode($json);
-                        $er_inventory_type_id = trim(strtolower((isset($parametros->er_inventory_type_id)) ? $parametros->er_inventory_type_id : null));
-                        $er_inventory_type_description = trim(strtolower((isset($parametros->er_inventory_type_description)) ? $parametros->er_inventory_type_description : null));
-                        $sql = "select * from erp.er_inventory_types  er_it where er_it.er_inventory_type_description like '$er_inventory_type_description'";
+                        $er_inventory_id = trim(strtolower((isset($parametros->er_inventory_id)) ? $parametros->er_inventory_id : null));
+                        $er_inventory_description = trim(strtolower((isset($parametros->er_inventory_description)) ? $parametros->er_inventory_description : null));
+                        $sql = "select * from erp.er_inventories  er_i where er_i.er_inventory_description like '$er_inventory_description'";
                         $r = $connection->complexQueryNonAssociative($sql);
-                        if ($r['er_inventory_type_id'] == $er_inventory_type_id) {
+                        $r2 = $r;
+                        if ($r['er_inventory_id'] == $er_inventory_id) {
                             $r = 0;
                         }
                         if ($r == 0) {
-                            $er_inventory_type_state = trim(strtolower((isset($parametros->er_inventory_type_state)) ? $parametros->er_inventory_type_state : null));
-                            $sql = "UPDATE erp.er_inventory_types
-                                    SET er_inventory_type_description='$er_inventory_type_description', 
-                                    er_inventory_type_state='$er_inventory_type_state'
-                                    WHERE er_inventory_type_id='$er_inventory_type_id';";
-                            $connection->simpleQuery($sql);
-                            $data = [
-                                'code' => '1001',
-                                'msg' => 'Item actualizado de forma correcta'
-                            ];
+                            if ($r2['er_inventory_active'] == 1) {
+                                $er_inventory_state = trim(strtolower((isset($parametros->er_inventory_state)) ? $parametros->er_inventory_state : null));
+                                $er_inventory_category_id_fk_inventories = trim(strtolower((isset($parametros->er_inventory_category_id_fk_inventories)) ? $parametros->er_inventory_category_id_fk_inventories : null));
+                                $sql = "UPDATE erp.er_inventories
+                                        SET  er_inventory_category_id_fk_inventories='$er_inventory_category_id_fk_inventories',
+                                         er_inventory_description='$er_inventory_description',
+                                         er_inventory_state='$er_inventory_state'
+                                        WHERE er_inventory_id='$er_inventory_id';";
+                                $connection->simpleQuery($sql);
+                                $data = [
+                                    'code' => '1001',
+                                    'msg' => 'Item actualizado de forma correcta'
+                                ];
+                            } else {
+                                $data = [
+                                    'code' => '1007',
+                                    'msg' => 'Lo sentimos, este item ya no exite volver a cargar'
+                                ];
+                            }
                         } else {
                             $data = [
                                 'code' => '1007',
@@ -113,11 +127,14 @@ $app->group('/api-erp/', function () {
                 $validacionToken = $jwt->checkToken($token);
                 if ($validacionToken == true) {
                     $connection = new \Service\Connections();
-                    $sql = "select er_it.* from erp.er_inventory_types er_it where er_it.er_inventory_type_active='1'";
+                    $sql = "select er_i.*,er_ic.er_inventory_category_description from erp.er_inventories er_i 
+                            inner join erp.er_inventory_categorys er_ic on
+                             er_i.er_inventory_category_id_fk_inventories=er_ic.er_inventory_category_id
+                             where er_i.er_inventory_active='1' ";
                     $r = $connection->complexQueryAssociative($sql);
                     $data = [
                         'code' => '1001',
-                        'msg' => 'Tipo de inventarios cargados',
+                        'msg' => 'Inventario cargados',
                         'data' => $r
                     ];
                 } else {

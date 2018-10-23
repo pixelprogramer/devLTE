@@ -43,8 +43,10 @@ require '..\app\Controller\Configuration\Country.php';
 require '..\app\Controller\Configuration\Departement.php';
 //Erp
 require '..\app\Controller\Erp\InventoryType.php';
-
-
+require '..\app\Controller\Erp\InventoryCategory.php';
+require '..\app\Controller\Erp\Inventory.php';
+require '..\app\Controller\Erp\Cellar.php';
+require '..\app\Controller\Erp\productType.php';
 # Services
 require '..\app\Service\Helpers.php';
 require '..\app\Service\JwtAuth.php';
