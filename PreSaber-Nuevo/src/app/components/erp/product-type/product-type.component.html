@@ -13,7 +13,7 @@
 </div>
 
 <ng2-toasty [position]="position"></ng2-toasty>
-<app-card [title]="'Categoria de inventarios'">
+<app-card [title]="'Tipos de producto'">
   <div class="row">
     <div class="col-md-12">
       <button class="btn btnPropio" style="float: right;" (click)="reset()">
@@ -22,18 +22,25 @@
     </div>
   </div>
   <div class="row" id="datosBasicosCrearPermisos">
-    <div class="col-sm-12 col-md-6">
+    <div class="col-sm-4 col-md-4">
+      <h4 class="sub-title">Codigo</h4>
+      <input class="form-control" id="code" name="code" placeholder="Codigo"
+             #descripcionExamen="ngModel"
+             [ngStyle]="{'border': objProductType.er_products_type_code== '' ? 'red solid 1px' : '#577928 solid 1px'}"
+             [(ngModel)]="objProductType.er_products_type_code">
+    </div>
+    <div class="col-sm-4 col-md-4">
       <h4 class="sub-title">Descripcion</h4>
       <input class="form-control" id="descripcion" name="descripcion" placeholder="Descripcion"
              #descripcionExamen="ngModel"
-             [ngStyle]="{'border': objInventoryCategory.er_inventory_category_description== '' ? 'red solid 1px' : '#577928 solid 1px'}"
-             [(ngModel)]="objInventoryCategory.er_inventory_category_description">
+             [ngStyle]="{'border': objProductType.er_products_type_description== '' ? 'red solid 1px' : '#577928 solid 1px'}"
+             [(ngModel)]="objProductType.er_products_type_description">
     </div>
-    <div class="col-sm-12 col-md-6 col-xs-12">
+    <div class="col-sm-4 col-md-4">
       <h4 class="sub-title">Estado</h4>
       <select class="form-control"
-              [ngStyle]="{'border': objInventoryCategory.er_inventory_category_state == '000' ? 'red solid 1px' : '#577928 solid 1px'}"
-              [(ngModel)]="objInventoryCategory.er_inventory_category_state">
+              [ngStyle]="{'border': objProductType.er_products_type_state == '000' ? 'red solid 1px' : '#577928 solid 1px'}"
+              [(ngModel)]="objProductType.er_products_type_state">
         <option value="000">Seleccione</option>
         <option value="activo">Activo</option>
         <option value="inactivo">Inactivo</option>
@@ -54,7 +61,7 @@
 </app-card>
 <div class="row">
   <div class="col-sm-12">
-    <app-card [title]="'Categoria de inventarios'">
+    <app-card [title]="'Tabla tipos de productos'">
       <div class="dataTables_scrollBody"
            style="position: relative; overflow: auto; max-height: 400px; width: 100%; margin-top: 10px">
         <table class="table table-striped table-bordered nowrap dataTable" role="grid"
@@ -77,17 +84,17 @@
           </thead>
 
           <tbody>
-          <tr *ngFor="let objInventoryCategory of listInventoryCategory; let i = index" role="row" class="odd Tablas filaTabla">
-            <td>{{objInventoryCategory.er_inventory_category_id}}</td>
-            <td>{{objInventoryCategory.er_inventory_category_description}}</td>
-            <td><span [class]="objInventoryCategory.er_inventory_category_state == 'activo' || objInventoryCategory.er_inventory_category_state == 'ACTIVO' ?
-            'pcoded-badge label label-success':'pcoded-badge label label-danger'" >{{objInventoryCategory.er_inventory_category_state}}</span></td>
+          <tr *ngFor="let productType of listProductType; let i = index" role="row" class="odd Tablas filaTabla">
+            <td>{{productType.er_products_type_id}}</td>
+            <td>{{productType.er_products_type_description}}</td>
+            <td><span [class]="productType.er_products_type_state == 'activo' || productType.er_products_type_state == 'ACTIVO' ?
+            'pcoded-badge label label-success':'pcoded-badge label label-danger'" >{{productType.er_products_type_state}}</span></td>
             <td style="text-align: center">
               <label  onclick="desplegar(this)" id="{{i}}" class="botonDesplegar">
                 <i class="ti-settings"></i>
                 <div class="panelTabla" id="T{{i}}" style="display: none">
                   <ul>
-                    <a><li (click)="selectInventoryCategory(objInventoryCategory)"><label>Seleccionar</label></li></a>
+                    <a><li (click)="selectProductType(productType)"><label>Seleccionar</label></li></a>
                   </ul>
                 </div>
               </label>

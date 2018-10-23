@@ -138,7 +138,9 @@
 }
 */
 .panelTabla {
-  position: fixed;
+  margin-left: -91px;
+  margin-top: -69px;
+  position: relative;
   width: auto;
   height: auto;
   background: #4297C0;
@@ -163,6 +165,9 @@
 }
 .panelTabla label:hover{
   cursor: pointer;
+}
+tr{
+  height: 42px !important;
 }
 
 

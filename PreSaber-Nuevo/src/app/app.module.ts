@@ -25,6 +25,10 @@ import { NewCityComponent } from './components/configuration/new-city/new-city.c
 import { ValidateCodeComponent } from './components/public/validate-code/validate-code.component';
 import { InventoryTypeComponent } from './components/erp/inventory-type/inventory-type.component';
 import { InventoryCategoryComponent } from './components/erp/inventory-category/inventory-category.component';
+import { InventoryComponent } from './components/erp/inventory/inventory.component';
+import { CellarComponent } from './components/erp/cellar/cellar.component';
+import { ProductTypeComponent } from './components/erp/product-type/product-type.component';
+import { ProductCategoryComponent } from './components/erp/product-category/product-category.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +41,11 @@ import { InventoryCategoryComponent } from './components/erp/inventory-category/
   NewCityComponent,
   ValidateCodeComponent,
   InventoryTypeComponent,
-  InventoryCategoryComponent],
+  InventoryCategoryComponent,
+  InventoryComponent,
+  CellarComponent,
+  ProductTypeComponent,
+  ProductCategoryComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,

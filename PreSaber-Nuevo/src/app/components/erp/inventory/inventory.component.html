@@ -1,0 +1,115 @@
+<div style="position: absolute;
+    z-index: 1000;
+    width: 100%;
+    height: 100%;
+    background: #f3f3f382;
+    text-align: center;" id="loader">
+  <div>
+    <img style="
+    width: 18%;
+    height: 50%;
+    margin-top: 13%;" src="./assets/images/logo_loader.gif"/>
+  </div>
+</div>
+<ng2-toasty [position]="position"></ng2-toasty>
+<app-card [title]="'Inventario'">
+  <div class="row">
+    <div class="col-md-12">
+      <button class="btn btnPropio" style="float: right;" (click)="reset()">
+        <i class="ti-wand"></i>Reset
+      </button>
+    </div>
+  </div>
+  <div class="row" id="datosBasicosCrearMenu">
+    <div class="col-sm-4 col-md-4">
+      <h4 class="sub-title">Descripcion</h4>
+      <input class="form-control" id="descripcion" name="descripcion" placeholder="Descripcion"
+             #descripcionExamen="ngModel"
+             [ngStyle]="{'border': objInventory.er_inventory_description== '' ? 'red solid 1px' : '#577928 solid 1px'}"
+             [(ngModel)]="objInventory.er_inventory_description">
+    </div>
+    <div class="col-sm-4 col-md-4">
+      <h4 class="sub-title">Categoria</h4>
+      <select class="form-control"  style="width: 100%"
+              [ngStyle]="{'border': objInventory.er_inventory_category_id_fk_inventories == '' ? 'red solid 1px' : '#577928 solid 1px'}"
+              [(ngModel)]="objInventory.er_inventory_category_id_fk_inventories">
+        <option value="">Seleccione</option>
+        <option *ngFor="let inventaryCategory of listInventaryCategory" value="{{inventaryCategory.er_inventory_category_id}}">
+          {{inventaryCategory.er_inventory_category_id}} - {{inventaryCategory.er_inventory_category_description}}</option>
+      </select>
+    </div>
+    <div class="col-sm-4 col-md-4">
+      <h4 class="sub-title">Estado</h4>
+      <select class="form-control"
+              [ngStyle]="{'border': objInventory.er_inventory_state == '000' ? 'red solid 1px' : '#577928 solid 1px'}"
+              [(ngModel)]="objInventory.er_inventory_state">
+        <option value="000">Seleccione</option>
+        <option value="activo">Activo</option>
+        <option value="inactivo">Inactivo</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="col-md-12" style="margin-top: 10px;" >
+    <div class="row" style="float: right; " id="botonesDatosBasicosCrearMenu">
+      <button style="padding: 5px; margin: 5px" class="btn btn-sm btnPropio" id="btnCrearMenu"
+              (click)="new()">
+        Crear
+      </button>
+
+      <button style="padding: 5px; margin: 5px" class="btn btn-sm btnPropio" id="btnActualizarMenu" (click)="updated()">Actualizar
+      </button>
+    </div>
+  </div>
+</app-card>
+<div class="row">
+  <div class="col-sm-12">
+    <app-card [title]="'Inventario'">
+      <div class="dataTables_scrollBody"
+           style="position: relative; overflow: auto; max-height: 400px; width: 100%; margin-top: 10px">
+        <table class="table table-striped table-bordered nowrap dataTable" role="grid"
+               aria-describedby="scr-vrt-dt_info" style="width: 100%;">
+          <thead>
+          <tr role="row" style="height: 0px;">
+            <th style="width: 144.45px;">
+              Codigo
+            </th>
+            <th style="width: 144.45px;">
+              Descripcion
+            </th>
+            <th style="width: 144.45px;">
+              Categoria
+            </th>
+            <th style="width: 144.45px;">
+              Estado
+            </th>
+            <th style="width: 70px;">
+              Acciones
+            </th>
+          </tr>
+          </thead>
+
+          <tbody>
+          <tr *ngFor="let objInventory of listInventory; let i = index" role="row" class="odd Tablas filaTabla">
+            <td>{{objInventory.er_inventory_id}}</td>
+            <td>{{objInventory.er_inventory_description}}</td>
+            <td>{{objInventory.er_inventory_category_description}}</td>
+            <td><span [class]="objInventory.er_inventory_state == 'activo' || objInventory.er_inventory_state == 'ACTIVO' ?
+            'pcoded-badge label label-success':'pcoded-badge label label-danger'" >{{objInventory.er_inventory_state}}</span></td>
+            <td style="text-align: center">
+              <label  onclick="desplegar(this)" id="{{i}}" class="botonDesplegar">
+                <i class="ti-settings"></i>
+                <div class="panelTabla" id="T{{i}}" style="display: none">
+                  <ul>
+                    <a><li (click)="selectInventory(objInventory)"><label>Seleccionar</label></li></a>
+                  </ul>
+                </div>
+              </label>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </app-card>
+  </div>
+</div>
